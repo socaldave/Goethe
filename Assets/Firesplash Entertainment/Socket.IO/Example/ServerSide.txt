@@ -1,0 +1,23 @@
+The server for this example is based on NodeJS and is hosted on our Kubernetes Cluster.
+We do not store any data about your trial there.
+
+The server uses this app code to process your request (io is the socket.io instance):
+
+
+
+io.on('connection', (socket) => {
+	
+    socket.on('KnockKnock', (data) => {
+        socket.emit('WhosThere');
+    });
+
+    socket.on('ItsMe', (data) => {
+        socket.emit('Welcome', 'Hi customer using unity' + data.version + ', this is backend microservice ' + process.env.K8S_POD + '. Thanks for buying our asset. (No data is stored on our server)');
+        socket.emit('TechData', {
+			podName: process.env.K8S_POD,
+			timestamp: (new Date()).toUTCString()
+		});
+		socket.disconnect(true);
+    });
+
+});
